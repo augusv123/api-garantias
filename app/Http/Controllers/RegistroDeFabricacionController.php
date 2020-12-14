@@ -467,8 +467,8 @@ class RegistroDeFabricacionController extends Controller
         return response()->json($categoriasDeGarantias);
 
     }
-    public function getFamComGarantias(){
-        $famComGarantias = Fam_COM_Garantia::with('categoria')->with('familiaComercial')->get();
+    public function getFamComGarantias(Request $request){
+        $famComGarantias = Fam_COM_Garantia::with('categoria')->with('familiaComercial')->where('empresa',$request->empresa)->get();
         foreach ($famComGarantias as $key => $fam) {
             if(strlen($fam->fam_com) <= 4){
                $fam->descripcion = $this->getDescripcionFamiliaSAP($fam->fam_com);
