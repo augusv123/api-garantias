@@ -34,7 +34,7 @@ class RegistroDeFabricacionController extends Controller
     public function datosRegFabricacionCompletos(Request $request){
         $etiquetavieja = $this->checkEtiqueta($request->etiqueta);
         if($etiquetavieja){
-            
+                
             $arreglo = strtoupper($request->etiqueta);
             $arreglo = explode("E", $arreglo);
             $numeroDeOrden = $arreglo[0];

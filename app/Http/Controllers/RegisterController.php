@@ -18,6 +18,7 @@ class RegisterController extends BaseController
      */
     public function register(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -45,6 +46,7 @@ class RegisterController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
+    
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
