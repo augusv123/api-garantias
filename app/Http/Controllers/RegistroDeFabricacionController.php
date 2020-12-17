@@ -32,6 +32,7 @@ class RegistroDeFabricacionController extends Controller
         
     }
     public function datosRegFabricacionCompletos(Request $request){
+        
         $etiquetavieja = $this->checkEtiqueta($request->etiqueta);
         if($etiquetavieja){
                 

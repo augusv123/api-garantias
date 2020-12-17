@@ -31,28 +31,29 @@ Route::middleware('auth:api')->group( function () {
 });
 
 Route::middleware('laravel.auth')->group( function () {
-    Route::get('/datosRegFabricacion','RegistroDeFabricacionController@datosRegFabricacion');
-    Route::get('/ordenDeProduccion','RegistroDeFabricacionController@ordenDeProduccion');
-    Route::get('/datosRegFabricacionCompletos','RegistroDeFabricacionController@datosRegFabricacionCompletos');
-    Route::get('/getDescripcionItem','RegistroDeFabricacionController@getDescripcionItem');
-    Route::get('/getMovimientosConSaldo','RegistroDeFabricacionController@getMovimientosConSaldo');
-    Route::get('/getTipoGarantiaItem','RegistroDeFabricacionController@getTipoGarantiaItem');
-    Route::get('/getItems','RegistroDeFabricacionController@getItems');
-    Route::get('/getInfoCliente','RegistroDeFabricacionController@getInfoCliente');
-    Route::get('/item','RegistroDeFabricacionController@item');
-    Route::get('/getUserByEmailAndPassword','RegistroDeFabricacionController@getUserByEmailAndPassword');
-    Route::get('/getEtiquetaSAP','RegistroDeFabricacionController@getEtiquetaSAP');
-    Route::get('/getFamiliasComerciales','RegistroDeFabricacionController@getFamiliasComerciales');
-    Route::get('/getCategoriasDeGarantias','RegistroDeFabricacionController@getCategoriasDeGarantias');
-    Route::get('/getFamComGarantias','RegistroDeFabricacionController@getFamComGarantias');
-    Route::get('/addFamComGarantia','RegistroDeFabricacionController@addFamComGarantia');
-    Route::get('/deleteFamComGarantia','RegistroDeFabricacionController@deleteFamComGarantia');
-    
-    
-    
-    Route::get('/getRegistroSap','RegistroDeFabricacionController@getRegistroSap');
-    Route::get('/getGruposMateriales','RegistroDeFabricacionController@getGruposMateriales');
-    Route::get('/getDescripcionFamiliaSAP','RegistroDeFabricacionController@getDescripcionFamiliaSAP');
-    Route::get('/test','IndexController@test');
+
 
 });
+Route::get('/datosRegFabricacion','RegistroDeFabricacionController@datosRegFabricacion');
+Route::get('/ordenDeProduccion','RegistroDeFabricacionController@ordenDeProduccion');
+Route::get('/datosRegFabricacionCompletos','RegistroDeFabricacionController@datosRegFabricacionCompletos');
+Route::get('/getDescripcionItem','RegistroDeFabricacionController@getDescripcionItem');
+Route::get('/getMovimientosConSaldo','RegistroDeFabricacionController@getMovimientosConSaldo');
+Route::get('/getTipoGarantiaItem','RegistroDeFabricacionController@getTipoGarantiaItem');
+Route::get('/getItems','RegistroDeFabricacionController@getItems');
+Route::get('/getInfoCliente','RegistroDeFabricacionController@getInfoCliente');
+Route::get('/item','RegistroDeFabricacionController@item');
+Route::get('/getUserByEmailAndPassword','RegistroDeFabricacionController@getUserByEmailAndPassword');
+Route::get('/getEtiquetaSAP','RegistroDeFabricacionController@getEtiquetaSAP');
+Route::get('/getFamiliasComerciales','RegistroDeFabricacionController@getFamiliasComerciales');
+Route::get('/getCategoriasDeGarantias','RegistroDeFabricacionController@getCategoriasDeGarantias');
+Route::get('/getFamComGarantias','RegistroDeFabricacionController@getFamComGarantias');
+Route::get('/addFamComGarantia','RegistroDeFabricacionController@addFamComGarantia');
+Route::get('/deleteFamComGarantia','RegistroDeFabricacionController@deleteFamComGarantia');
+
+
+
+Route::get('/getRegistroSap','RegistroDeFabricacionController@getRegistroSap');
+Route::get('/getGruposMateriales','RegistroDeFabricacionController@getGruposMateriales');
+Route::get('/getDescripcionFamiliaSAP','RegistroDeFabricacionController@getDescripcionFamiliaSAP');
+Route::get('/test','IndexController@test');
