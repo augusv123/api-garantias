@@ -44,7 +44,6 @@ class RegistroDeFabricacionController extends Controller
         $registro = $this->datosRegFabricacion($numeroDeOrden,$numeroEtiqueta,$request->empresa);
         $orden =  $this->ordenDeProduccion($numeroDeOrden,$request->empresa);
 
-        // return response()->json($request->etiqueta);
        
 
         if($registro == null){
@@ -69,15 +68,15 @@ class RegistroDeFabricacionController extends Controller
             $registro->orden = $orden->{'nr-ord-produ'} ?? "" ;
             $registro->etiqueta = (int)$registro->{'nr-etiq'} ?? "" ;
             // if($registro->etiqueta != "") $registro->etiqueta = parseInt($registro->etiqueta);
-            $registro->descripcion =  $this->getDescripcionItem($orden->{'it-codigo'});
+            $registro->descripcion =  $this->getDescripcionItem($orden->{'it-codigo'},$request->empresa);
             // $registro->tipoGarantia->cat   = $this->getTipoGarantiaItem($registro->{'it-codigo'});
 			$registro->regFabricacion = new \stdClass();
 
             $registro->regFabricacion->tipoGarantia   = new \stdClass();
 
-
-            $registro->regFabricacion->tipoGarantia->cat   = $this->getTipoGarantiaItem($registro->itcodigo,$request->empresa);
-            
+            $cat = $this->getTipoGarantiaItem($registro->itcodigo,$request->empresa);
+            $registro->regFabricacion->tipoGarantia->cat   = $cat;
+        
             // $registro->regFabricacion->tipoGarantia->cat   = 2;
             $registro->regFabricacion->tipoGarantia->lapsoValidez   = 2;
             return response()->json($registro);
@@ -88,12 +87,13 @@ class RegistroDeFabricacionController extends Controller
              
             
             $etiqueta  =  str_pad($request->etiqueta, 20, "0", STR_PAD_LEFT);
-             $registro = $this->getRegistroSap($etiqueta);
+            $registro = $this->getRegistroSap($etiqueta);
              $registro = $registro->original;
 
             
 
              if(isset($registro->error))  {
+
                 $registro = new \stdClass();
                 $registro->error = true;
                 $registro->error_msg ="No se encontro ningun registro de fabricacion.";
@@ -114,9 +114,11 @@ class RegistroDeFabricacionController extends Controller
                    
                     $registro->regFabricacion->tipoGarantia   = new \stdClass();
 
-                    $registro->regFabricacion->tipoGarantia->cat  = $this->getTipoGarantiaItemSAP($registro->itcodigo,$request->empresa);
+                    $cat =$this->getTipoGarantiaItemSAP($registro->itcodigo,$request->empresa);
+             
+                    $registro->regFabricacion->tipoGarantia->cat  = $cat;
                     $registro->orden =  $registro->Charg;
-                   ;
+                   
                     $registro->descripcion = $this->getDescripcionItemSap($registro->itcodigo)->descripcion;
                     $registro->etiqueta = "";
                     
@@ -137,10 +139,10 @@ class RegistroDeFabricacionController extends Controller
         if(str_contains($codigo,'E') || str_contains($codigo,'e') ) return true;
         else return false;
     }
-    public function getDescripcionItem($itCodigo) {
+    public function getDescripcionItem($itCodigo,$empresa) {
 
         // $itCodigo = $request->itCodigo;
-        $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itCodigo)->first();
+        $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itCodigo)->where('empresa',$empresa)->first();
             
         return $result->{'desc-item'};
 
@@ -177,17 +179,26 @@ class RegistroDeFabricacionController extends Controller
     public function item(Request $request) {
 
         $itcodigo = $request->itcodigo;
-        $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itcodigo)->first();
+        $etiqueta = $request->etiqueta;
+        $empresa = $request->empresa;
+        //seguir aca
+        if($etiqueta >= 0 ){
+            
+            $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itcodigo)->where('empresa',$empresa)->first();
             if($result != null){
                 $result->success= true;
                 $result->descripcion  = $result->{'desc-item'};
+                return response()->json($result);
+
             }
+        }
             else{
             //    $descripcionSAP =  $this->getDescripcionItemSap($itcodigo);
                $descripcionSAP =  $this->getDescripcionItemSap($itcodigo);
-            //    return $descripcionSAP;
-            
-
+            //    $result = new \stdClass();
+            //    $result->success= true;
+            //    $result->descripcion= $descripcionSAP->descripcion;
+      
                return response()->json($descripcionSAP);
 
             }
@@ -215,7 +226,7 @@ class RegistroDeFabricacionController extends Controller
             $result1 = DB::connection('sqlsrv')->table('fam_com_garantias')->where('fam_com', $result->{'fm-cod-com'})->where('empresa',$request->empresa)->first();
             return $result1;
         }
-        return response()->json("not found");
+        return response()->json(false);
         //agregar try catch
 
     }
@@ -383,11 +394,11 @@ class RegistroDeFabricacionController extends Controller
     }
 
     public function getTipoGarantiaItem($itCodigo,$empresa){
-        $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itCodigo)->first();
+        $result = DB::connection('sqlsrv')->table('item')->where('it-codigo', $itCodigo)->where('empresa',$empresa)->first();
         
         if($result != null){
             $result1 = DB::connection('sqlsrv')->table('fam_com_garantias')->where('fam_com', $result->{'fm-cod-com'})->where('empresa',$empresa)->first();
-            return $result1 ? $result1->cat_garantia : "no encontrada";
+            return $result1 ? $result1->cat_garantia : false;
         }
         return "not found";
     }
@@ -464,7 +475,7 @@ class RegistroDeFabricacionController extends Controller
 
     }
     public function getCategoriasDeGarantias(){
-        $categoriasDeGarantias = CategoriaDeGarantia::all();
+        $categoriasDeGarantias = CategoriaDeGarantia::where('empresa',request('empresa'))->get();
         return response()->json($categoriasDeGarantias);
 
     }
