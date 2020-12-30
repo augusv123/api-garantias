@@ -50,8 +50,9 @@ class RegisterController extends BaseController
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
+            $success['token'] =  $user->createToken('MyApp')->accessToken; 
             $success['name'] =  $user->name;
+            $success['user'] =  $user;
    
             return $this->sendResponse($success, 'User login successfully.');
         } 
@@ -59,6 +60,7 @@ class RegisterController extends BaseController
             return $this->sendError('Unauthorized.', ['error'=>'Unauthorized']);
         } 
     }
+    //metodo para loggease en el portal de clientes ( aux)
     public function loginPC2(Request $request){
         $email = $request->id;
         $password = $request->password;
@@ -84,6 +86,9 @@ class RegisterController extends BaseController
 
     
     }
+    
+    //metodo para loggease en el portal de clientes (actualmente activo)
+
     public function loginPC(Request $request){
         $email = $request->id;
         $password = $request->password;

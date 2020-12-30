@@ -9,6 +9,6 @@ class CategoriaDeGarantia extends Model
 {
     use HasFactory;
     // protected $connection= 'mysql';
-    protected $connection = 'mysql2';
+    
     protected $table ="cat_garantias";
 }

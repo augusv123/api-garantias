@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\LaravelToLaravel;
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,11 +22,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', 'RegisterController@register');
 Route::post('login', 'RegisterController@login');
 Route::post('loginPC', 'RegisterController@loginPC');
+Route::middleware('auth:api')->get('/token/revoke', function (Request $request) {
+    DB::table('oauth_access_tokens')
+        ->where('user_id', $request->user()->id)
+        ->update([
+            'revoked' => true
+        ]);
+    return response()->json('DONE');
+});
 
 // Route::middleware('auth:api')->group( function () {
 //     Route::get('/test','IndexController@test');
 
 // });
+//ruta para desloguear
+
 Route::middleware('auth:api')->group( function () {
     
 
@@ -56,4 +68,5 @@ Route::get('/deleteFamComGarantia','RegistroDeFabricacionController@deleteFamCom
 Route::get('/getRegistroSap','RegistroDeFabricacionController@getRegistroSap');
 Route::get('/getGruposMateriales','RegistroDeFabricacionController@getGruposMateriales');
 Route::get('/getDescripcionFamiliaSAP','RegistroDeFabricacionController@getDescripcionFamiliaSAP');
-Route::get('/test','IndexController@test');
+Route::get('/test','App\Http\Controllers\IndexController@test');
+// Route::get('/test', [IndexController::class, 'test']);

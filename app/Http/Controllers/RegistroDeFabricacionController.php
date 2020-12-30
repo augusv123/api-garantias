@@ -8,6 +8,7 @@ use App\Models\OrdenProduccion;
 use App\Models\FamiliaComercial;
 use App\Models\CategoriaDeGarantia;
 use App\Models\Fam_COM_Garantia;
+use App\Models\Garantia;
 
 
 use DB;
@@ -55,7 +56,7 @@ class RegistroDeFabricacionController extends Controller
 
             
 
-            return response()->json($result);
+            return response()->json($result,404);
             
         }
         if($orden!= null ) {
@@ -79,6 +80,9 @@ class RegistroDeFabricacionController extends Controller
         
             // $registro->regFabricacion->tipoGarantia->cat   = 2;
             $registro->regFabricacion->tipoGarantia->lapsoValidez   = 2;
+            $result = Garantia::where('orden', '=', $numeroDeOrden)->where('etiqueta', '=', $numeroEtiqueta)->where('empresa',$request->empresa)->first();
+            if($result) $registro->regFabricacion->estado = true;
+            else $registro->regFabricacion->estado = false;
             return response()->json($registro);
         }
 
@@ -98,7 +102,7 @@ class RegistroDeFabricacionController extends Controller
                 $registro->error = true;
                 $registro->error_msg ="No se encontro ningun registro de fabricacion.";
                  
-                 return response()->json($registro);
+                 return response()->json($registro,404);
                  
 
                }
@@ -121,7 +125,9 @@ class RegistroDeFabricacionController extends Controller
                    
                     $registro->descripcion = $this->getDescripcionItemSap($registro->itcodigo)->descripcion;
                     $registro->etiqueta = "";
-                    
+                    $result = Garantia::where('orden', '=', $etiqueta)->where('etiqueta', '=', '-1')->where('empresa',$request->empresa)->first();
+                    if($result) $registro->regFabricacion->estado = true;
+                    else $registro->regFabricacion->estado = false;
     
                  return response()->json($registro);
                }  
